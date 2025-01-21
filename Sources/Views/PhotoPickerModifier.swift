@@ -25,7 +25,9 @@ struct PhotoPickerModifier: ViewModifier {
                 //MARK: - Dissmiss
             } content: {
                 VStack(alignment: .leading, spacing: 15){
+                    
                     photoPicker()
+                    
                     Button {
                         showCamera.toggle()
                     } label: {
@@ -52,12 +54,12 @@ struct PhotoPickerModifier: ViewModifier {
                     .presentationDetents([.height(140)])
                     .presentationDragIndicator(.visible)
                     .presentationCornerRadius(20)
-                
+                    .fullScreenCover(isPresented: $openPicEditor, content: {
+                        ImageCropperView(image: $selectedImage)
+                    })
                 
             }
-            .fullScreenCover(isPresented: $openPicEditor, content: {
-                ImageCropperView(image: $selectedImage)
-            })
+            
         
     }
     
