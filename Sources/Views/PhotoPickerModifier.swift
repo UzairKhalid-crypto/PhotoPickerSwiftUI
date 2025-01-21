@@ -35,7 +35,8 @@ struct PhotoPickerModifier: ViewModifier {
                             .foregroundStyle(Color(.label))
                     }
                     .fullScreenCover(isPresented: self.$showCamera) {
-                        accessCameraView(selectedImage: self.$tempImage, openPicEditor: $openPicEditor)
+                        accessCameraView(selectedImage: self.$tempImage,
+                                         openPicEditor: $openPicEditor)
                             .background(.black)
                     }
                     
@@ -54,8 +55,10 @@ struct PhotoPickerModifier: ViewModifier {
                     .presentationDetents([.height(140)])
                     .presentationDragIndicator(.visible)
                     .presentationCornerRadius(20)
-                    .fullScreenCover(isPresented: $openPicEditor, content: {
-                        ImageCropperView(image: $image, tempImage: $tempImage, isPresented: $openPicEditor)
+                    .fullScreenCover(isPresented: $openPicEditor ,content: {
+                        ImageCropperView(image: $image,
+                                         tempImage: $tempImage,
+                                         isPresented: $openPicEditor, closeSheet: $isPresented)
                     })
                 
             }
