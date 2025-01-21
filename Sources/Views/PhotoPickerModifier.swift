@@ -26,9 +26,13 @@ struct PhotoPickerModifier: ViewModifier {
             } content: {
                 VStack(alignment: .leading, spacing: 15){
                     photoPicker()
-                    
-                    sheetTile("Take a photo", image: .camera)
-                        .fullScreenCover(isPresented: self.$showCamera) {
+                    Button {
+                        showCamera.toggle()
+                    } label: {
+                        sheetTile("Take a photo", image: .camera)
+                            .foregroundStyle(Color(.label))
+                    }
+                    .fullScreenCover(isPresented: self.$showCamera) {
                                        accessCameraView(selectedImage: self.$image)
                                            .background(.black)
                         }
