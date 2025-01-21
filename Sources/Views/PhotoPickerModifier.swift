@@ -17,6 +17,8 @@ struct PhotoPickerModifier: ViewModifier {
     @State private var showCamera = false
     @State private var openPicEditor = false
     
+    @State private var tempImage: Image?
+    
     func body(content: Content) -> some View {
         content
             .sheet(isPresented: $isPresented) {
@@ -33,7 +35,7 @@ struct PhotoPickerModifier: ViewModifier {
                             .foregroundStyle(Color(.label))
                     }
                     .fullScreenCover(isPresented: self.$showCamera) {
-                        accessCameraView(selectedImage: self.$image, openPicEditor: $openPicEditor)
+                        accessCameraView(selectedImage: self.$tempImage, openPicEditor: $openPicEditor)
                             .background(.black)
                     }
                     
@@ -53,7 +55,7 @@ struct PhotoPickerModifier: ViewModifier {
                     .presentationDragIndicator(.visible)
                     .presentationCornerRadius(20)
                     .fullScreenCover(isPresented: $openPicEditor, content: {
-                        ImageCropperView(image: $image, isPresented: $openPicEditor)
+                        ImageCropperView(image: $image, tempImage: $tempImage, isPresented: $openPicEditor)
                     })
                 
             }
@@ -72,7 +74,7 @@ struct PhotoPickerModifier: ViewModifier {
         }.onChange(of: selectedItem) {
             Task {
                 if let image = try? await selectedItem?.loadTransferable(type: Image.self) {
-                    self.image = image
+                    self.tempImage = image
                     self.openPicEditor = true
                 }
                 
@@ -102,7 +104,9 @@ struct PhotoPickerModifier: ViewModifier {
 // Extension for adding the authentication sheet modifier to any view
 extension View {
     public func photoPicker(isPresented: Binding<Bool>, image: Binding<Image?> , showDeleteButton: Bool = true) -> some View {
-        modifier(PhotoPickerModifier(isPresented: isPresented, image: image, showDeleteButton: showDeleteButton))
+        modifier(PhotoPickerModifier(isPresented: isPresented,
+                                     image: image,
+                                     showDeleteButton: showDeleteButton))
     }
 }
 

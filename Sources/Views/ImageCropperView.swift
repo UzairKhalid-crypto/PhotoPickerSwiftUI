@@ -10,12 +10,13 @@ import Mantis
 
 struct ImageCropperView: UIViewControllerRepresentable{
     @Binding var image: Image?
+    @Binding var tempImage: Image?
     @Binding var isPresented: Bool
     func makeUIViewController(context: Context) -> CropViewController {
         var config = Mantis.Config()
         config.cropToolbarConfig.toolbarButtonOptions = [.clockwiseRotate , .counterclockwiseRotate , .reset]
         
-        let cropViewController = Mantis.cropViewController(image: image!.asUIImage(), config: config)
+        let cropViewController = Mantis.cropViewController(image: tempImage!.asUIImage(), config: config)
         cropViewController.config.presetFixedRatioType = .alwaysUsingOnePresetFixedRatio(ratio:  4 / 4)
         cropViewController.delegate = context.coordinator
         return cropViewController
