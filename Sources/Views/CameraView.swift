@@ -10,12 +10,10 @@ import SwiftUI
 struct accessCameraView: UIViewControllerRepresentable {
     
     @Binding var selectedImage: Image?
-    @Binding var closeSheet: Bool
     @Binding var openPicEditor: Bool
     @Environment(\.presentationMode) var isPresented
     
     func makeUIViewController(context: Context) -> UIImagePickerController {
-        closeSheet = false
         let imagePicker = UIImagePickerController()
         imagePicker.sourceType = .camera
         imagePicker.allowsEditing = false
