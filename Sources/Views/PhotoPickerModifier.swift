@@ -17,7 +17,7 @@ struct PhotoPickerModifier: ViewModifier {
     @State private var openPicEditor = false
     
     @State var image: Image?
-    @State private var selectedImage: UIImage?
+//    @State private var selectedImage: UIImage?
     
     func body(content: Content) -> some View {
         content
@@ -55,7 +55,7 @@ struct PhotoPickerModifier: ViewModifier {
                     .presentationDragIndicator(.visible)
                     .presentationCornerRadius(20)
                     .fullScreenCover(isPresented: $openPicEditor, content: {
-                        ImageCropperView(image: $selectedImage)
+                        ImageCropperView(image: $image)
                     })
                 
             }
