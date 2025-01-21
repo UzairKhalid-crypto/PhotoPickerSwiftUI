@@ -12,7 +12,7 @@ struct ImageCropperView: UIViewControllerRepresentable{
     @Binding var image: Image?
     @Binding var tempImage: Image?
     @Binding var isPresented: Bool
-   // @Binding var closeSheet: Bool
+    @Binding var closeSheet: Bool
     
     func makeUIViewController(context: Context) -> CropViewController {
         var config = Mantis.Config()
@@ -57,19 +57,19 @@ struct ImageCropperView: UIViewControllerRepresentable{
         @MainActor func cropViewControllerDidCrop(_ cropViewController: CropViewController, cropped: UIImage, transformation: Transformation) {
             //MARK: - Success
             parent.image = Image(uiImage: cropped)
-           // parent.closeSheet.toggle()
+            parent.closeSheet.toggle()
             parent.isPresented = false
         }
         
         @MainActor func cropViewControllerDidCancel(_ cropViewController: CropViewController, original: UIImage) {
             //MARK: - Failed
-            //parent.closeSheet.toggle()
+            parent.closeSheet.toggle()
             parent.isPresented = false
         }
         
         @MainActor func cropViewControllerDidFailToCrop(_ cropViewController: CropViewController, original: UIImage) {
             //MARK: - Failed
-           // parent.closeSheet.toggle()
+            parent.closeSheet.toggle()
             parent.isPresented = false
         }
         

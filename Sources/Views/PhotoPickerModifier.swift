@@ -60,7 +60,8 @@ struct PhotoPickerModifier: ViewModifier {
                     },content: {
                         ImageCropperView(image: $image,
                                          tempImage: $tempImage,
-                                         isPresented: $openPicEditor)
+                                         isPresented: $openPicEditor,
+                                         closeSheet: $isPresented)
                     })
                 
             }
