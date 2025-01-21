@@ -10,12 +10,13 @@ import SwiftUI
 struct accessCameraView: UIViewControllerRepresentable {
     
     @Binding var selectedImage: Image?
-    @Environment(\.presentationMode) var isPresented 
+    @Binding var openPicEditor: Bool
+    @Environment(\.presentationMode) var isPresented
     
     func makeUIViewController(context: Context) -> UIImagePickerController {
         let imagePicker = UIImagePickerController()
         imagePicker.sourceType = .camera
-        imagePicker.allowsEditing = true
+        imagePicker.allowsEditing = false
         imagePicker.delegate = context.coordinator
         return imagePicker
     }
@@ -40,6 +41,7 @@ class Coordinator: NSObject, UINavigationControllerDelegate, UIImagePickerContro
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         guard let selectedImage = info[.originalImage] as? UIImage else { return }
         self.picker.selectedImage = Image(uiImage: selectedImage)
+        self.picker.openPicEditor = true
         self.picker.isPresented.wrappedValue.dismiss()
     }
 }
