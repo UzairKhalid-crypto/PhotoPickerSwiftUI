@@ -10,14 +10,12 @@ import PhotosUI
 
 struct PhotoPickerModifier: ViewModifier {
     @Binding var isPresented: Bool
+    @Binding var image: Image?
     let showDeleteButton: Bool
-    
+
     @State private var selectedItem: PhotosPickerItem?
     @State private var showCamera = false
     @State private var openPicEditor = false
-    
-    @State var image: Image?
-//    @State private var selectedImage: UIImage?
     
     func body(content: Content) -> some View {
         content
@@ -94,14 +92,17 @@ struct PhotoPickerModifier: ViewModifier {
 }
 
 #Preview {
-    VStack{}.photoPicker(isPresented: .constant(true))
+    @Previewable @State var isPresented = true
+    @Previewable  @State var image: Image? = nil
+
+    VStack{}.photoPicker(isPresented: $isPresented, image: $image)
 }
 
 // MARK: - Extension
 // Extension for adding the authentication sheet modifier to any view
 extension View {
-    public func photoPicker(isPresented: Binding<Bool>, showDeleteButton: Bool = true) -> some View {
-        modifier(PhotoPickerModifier(isPresented: isPresented, showDeleteButton: showDeleteButton))
+    public func photoPicker(isPresented: Binding<Bool>, image: Binding<Image?> , showDeleteButton: Bool = true) -> some View {
+        modifier(PhotoPickerModifier(isPresented: isPresented, image: image, showDeleteButton: showDeleteButton))
     }
 }
 
