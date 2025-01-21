@@ -10,17 +10,17 @@ import Mantis
 
 struct ImageCropperView: UIViewControllerRepresentable{
     @Binding var image: Image?
-    
+    @Binding var isPresented: Bool
     func makeUIViewController(context: Context) -> CropViewController {
         var config = Mantis.Config()
         config.cropToolbarConfig.toolbarButtonOptions = [.clockwiseRotate , .counterclockwiseRotate , .reset]
-       
-            let cropViewController = Mantis.cropViewController(image: image!.asUIImage(), config: config)
-            cropViewController.config.presetFixedRatioType = .alwaysUsingOnePresetFixedRatio(ratio:  4 / 4)
-            cropViewController.delegate = context.coordinator
-            return cropViewController
         
-       
+        let cropViewController = Mantis.cropViewController(image: image!.asUIImage(), config: config)
+        cropViewController.config.presetFixedRatioType = .alwaysUsingOnePresetFixedRatio(ratio:  4 / 4)
+        cropViewController.delegate = context.coordinator
+        return cropViewController
+        
+        
     }
     
     func updateUIViewController(_ uiViewController: CropViewController, context: Context) {}
@@ -31,14 +31,15 @@ struct ImageCropperView: UIViewControllerRepresentable{
     
     class Coordinator: NSObject, @preconcurrency CropViewControllerDelegate {
         let cropQueue = DispatchQueue(label: "com.example.cropQueue")
-
+        
         @MainActor func cropViewControllerDidCrop(_ cropViewController: Mantis.CropViewController,
-                                       cropped: UIImage,
-                                       transformation: Mantis.Transformation,
-                                       cropInfo: Mantis.CropInfo) {
+                                                  cropped: UIImage,
+                                                  transformation: Mantis.Transformation,
+                                                  cropInfo: Mantis.CropInfo) {
             //MARK: - Success
             parent.image = Image(uiImage: cropped)
-
+            parent.isPresented = false
+            
         }
         
         func cropViewControllerDidEndResize(_ cropViewController: Mantis.CropViewController, original: UIImage, cropInfo: Mantis.CropInfo) {
@@ -49,19 +50,23 @@ struct ImageCropperView: UIViewControllerRepresentable{
         
         init(_ parent: ImageCropperView) {
             self.parent = parent
+            
         }
         
         @MainActor func cropViewControllerDidCrop(_ cropViewController: CropViewController, cropped: UIImage, transformation: Transformation) {
             //MARK: - Success
             parent.image = Image(uiImage: cropped)
+            parent.isPresented = false
         }
         
-        func cropViewControllerDidCancel(_ cropViewController: CropViewController, original: UIImage) {
+        @MainActor func cropViewControllerDidCancel(_ cropViewController: CropViewController, original: UIImage) {
             //MARK: - Failed
+            parent.isPresented = false
         }
         
-        func cropViewControllerDidFailToCrop(_ cropViewController: CropViewController, original: UIImage) {
+        @MainActor func cropViewControllerDidFailToCrop(_ cropViewController: CropViewController, original: UIImage) {
             //MARK: - Failed
+            parent.isPresented = false
         }
         
         func cropViewControllerDidBeginResize(_ cropViewController: CropViewController) {}
@@ -69,12 +74,12 @@ struct ImageCropperView: UIViewControllerRepresentable{
 }
 
 extension View {
-// This function changes our View to UIView, then calls another function
-// to convert the newly-made UIView to a UIImage.
+    // This function changes our View to UIView, then calls another function
+    // to convert the newly-made UIView to a UIImage.
     public func asUIImage() -> UIImage {
         let controller = UIHostingController(rootView: self)
         
- // Set the background to be transparent incase the image is a PNG, WebP or (Static) GIF
+        // Set the background to be transparent incase the image is a PNG, WebP or (Static) GIF
         controller.view.backgroundColor = .clear
         
         controller.view.frame = CGRect(x: 0, y: CGFloat(Int.max), width: 1, height: 1)
@@ -84,7 +89,7 @@ extension View {
         controller.view.bounds = CGRect(origin: .zero, size: size)
         controller.view.sizeToFit()
         
-// here is the call to the function that converts UIView to UIImage: `.asUIImage()`
+        // here is the call to the function that converts UIView to UIImage: `.asUIImage()`
         let image = controller.view.asUIImage()
         controller.view.removeFromSuperview()
         return image
@@ -92,7 +97,7 @@ extension View {
 }
 
 extension UIView {
-// This is the function to convert UIView to UIImage
+    // This is the function to convert UIView to UIImage
     public func asUIImage() -> UIImage {
         let renderer = UIGraphicsImageRenderer(bounds: bounds)
         return renderer.image { rendererContext in

@@ -55,7 +55,7 @@ struct PhotoPickerModifier: ViewModifier {
                     .presentationDragIndicator(.visible)
                     .presentationCornerRadius(20)
                     .fullScreenCover(isPresented: $openPicEditor, content: {
-                        ImageCropperView(image: $image)
+                        ImageCropperView(image: $image, isPresented: $openPicEditor)
                     })
                 
             }
