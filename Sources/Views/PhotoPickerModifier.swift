@@ -11,6 +11,7 @@ import PhotosUI
 struct PhotoPickerModifier: ViewModifier {
     @Binding var isPresented: Bool
     @Binding var image: Image?
+    let action: (() -> Void)
     let showDeleteButton: Bool
 
     @State private var selectedItem: PhotosPickerItem?
@@ -42,7 +43,7 @@ struct PhotoPickerModifier: ViewModifier {
                     
                     if showDeleteButton {
                         Button {
-                            isPresented = false
+                            action()
                         } label: {
                             sheetTile("Remove current picture", image: .trash)
                                 .foregroundStyle(.red)
@@ -77,6 +78,7 @@ struct PhotoPickerModifier: ViewModifier {
                     .font(.system(size: 16, weight: .regular))
             }.foregroundStyle(Color(.label))
         }.onChange(of: selectedItem) {
+
             Task {
                 if let image = try? await selectedItem?.loadTransferable(type: Image.self) {
                     self.tempImage = image
@@ -102,16 +104,21 @@ struct PhotoPickerModifier: ViewModifier {
     @Previewable @State var isPresented = true
     @Previewable  @State var image: Image? = nil
 
-    VStack{}.photoPicker(isPresented: $isPresented, image: $image)
+    VStack{}.photoPicker(isPresented: $isPresented, image: $image, removeImage: {})
 }
 
 // MARK: - Extension
 // Extension for adding the authentication sheet modifier to any view
 extension View {
-    public func photoPicker(isPresented: Binding<Bool>, image: Binding<Image?> , showDeleteButton: Bool = true) -> some View {
+    public func photoPicker(isPresented: Binding<Bool>,
+                            image: Binding<Image?> ,
+                            showDeleteButton: Bool = true,
+                            removeImage: @escaping () -> Void) -> some View {
+        
         modifier(PhotoPickerModifier(isPresented: isPresented,
-                                     image: image,
+                                     image: image, action: removeImage,
                                      showDeleteButton: showDeleteButton))
+        
     }
 }
 
