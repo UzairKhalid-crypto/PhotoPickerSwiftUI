@@ -36,7 +36,7 @@ struct PhotoPickerModifier: ViewModifier {
                             .foregroundStyle(Color(.label))
                     }
                     .fullScreenCover(isPresented: self.$showCamera) {
-                        accessCameraView(selectedImage: self.$tempImage,
+                        accessCameraView(selectedImage: self.$image,
                                          openPicEditor: $openPicEditor)
                             .background(.black)
                     }
@@ -56,13 +56,13 @@ struct PhotoPickerModifier: ViewModifier {
                     .presentationDetents([.height(140)])
                     .presentationDragIndicator(.visible)
                     .presentationCornerRadius(20)
-                    .fullScreenCover(isPresented: $openPicEditor ,onDismiss: {
-                        isPresented.toggle()
-                    },content: {
-                        ImageCropperView(image: $image,
-                                         tempImage: $tempImage,
-                                         isPresented: $openPicEditor)
-                    })
+//                    .fullScreenCover(isPresented: $openPicEditor ,onDismiss: {
+//                        isPresented.toggle()
+//                    },content: {
+//                        ImageCropperView(image: $image,
+//                                         tempImage: $tempImage,
+//                                         isPresented: $openPicEditor)
+//                    })
                 
             }
             
@@ -81,8 +81,8 @@ struct PhotoPickerModifier: ViewModifier {
 
             Task {
                 if let image = try? await selectedItem?.loadTransferable(type: Image.self) {
-                    self.tempImage = image
-                    self.openPicEditor = true
+                    self.image = image
+                   // self.openPicEditor = true
                 }
                 
             }
