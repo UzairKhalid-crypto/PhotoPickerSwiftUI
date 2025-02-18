@@ -42,7 +42,7 @@ class Coordinator: NSObject, UINavigationControllerDelegate, UIImagePickerContro
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         guard let selectedImage = info[.originalImage] as? UIImage else { return }
         self.picker.selectedImage = Image(uiImage: selectedImage)
-        self.picker.openPicEditor = true
+        self.picker.openPicEditor = false
         self.picker.isPresented.wrappedValue.dismiss()
     }
 }

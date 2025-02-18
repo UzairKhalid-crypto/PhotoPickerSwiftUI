@@ -37,7 +37,7 @@ struct PhotoPickerModifier: ViewModifier {
                     }
                     .fullScreenCover(isPresented: self.$showCamera) {
                         accessCameraView(selectedImage: self.$image,
-                                         openPicEditor: $openPicEditor)
+                                         openPicEditor: $isPresented)
                             .background(.black)
                     }
                     
@@ -82,7 +82,7 @@ struct PhotoPickerModifier: ViewModifier {
             Task {
                 if let image = try? await selectedItem?.loadTransferable(type: Image.self) {
                     self.image = image
-                   // self.openPicEditor = true
+                    self.isPresented = false
                 }
                 
             }
