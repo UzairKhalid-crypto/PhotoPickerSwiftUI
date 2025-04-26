@@ -80,9 +80,10 @@ struct PhotoPickerModifier: ViewModifier {
         }.onChange(of: selectedItem) {
 
             Task {
-                if let image = try? await selectedItem?.loadTransferable(type: Image.self) {
-                    self.image = image
-                    self.isPresented = false
+                if let loadedImage = try? await selectedItem?.loadTransferable(type: Data.self) ,
+                   let uimg = UIImage(data: loadedImage) {
+                        self.image = Image(uiImage: uimg)
+                        self.isPresented = false
                 }
                 
             }
