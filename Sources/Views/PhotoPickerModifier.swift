@@ -83,6 +83,7 @@ struct PhotoPickerModifier: ViewModifier {
                 if let loadedImage = try? await selectedItem?.loadTransferable(type: Data.self) ,
                    let uimg = UIImage(data: loadedImage) {
                         self.image = Image(uiImage: uimg)
+                        self.openPicEditor = true
                         self.isPresented = false
                 }
                 
