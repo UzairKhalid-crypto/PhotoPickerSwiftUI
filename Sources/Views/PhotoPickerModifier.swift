@@ -56,13 +56,13 @@ struct PhotoPickerModifier: ViewModifier {
                     .presentationDetents([.height(140)])
                     .presentationDragIndicator(.visible)
                     .presentationCornerRadius(20)
-                    .fullScreenCover(isPresented: $openPicEditor ,onDismiss: {
-                        isPresented.toggle()
-                    },content: {
-                        ImageCropperView(image: $image,
-                                         tempImage: $tempImage,
-                                         isPresented: $openPicEditor)
-                    })
+//                    .fullScreenCover(isPresented: $openPicEditor ,onDismiss: {
+//                        isPresented.toggle()
+//                    },content: {
+//                        ImageCropperView(image: $image,
+//                                         tempImage: $tempImage,
+//                                         isPresented: $openPicEditor)
+//                    })
                 
             }
             
@@ -83,7 +83,7 @@ struct PhotoPickerModifier: ViewModifier {
                 if let loadedImage = try? await selectedItem?.loadTransferable(type: Data.self) ,
                    let uimg = UIImage(data: loadedImage) {
                         self.image = Image(uiImage: uimg)
-                        self.openPicEditor = true
+                        //self.openPicEditor = true
                         self.isPresented = false
                 }
                 
